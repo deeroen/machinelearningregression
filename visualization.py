@@ -14,7 +14,7 @@ feature_names = ["year", "month", "day", "hour", "SO2", "NO2", "CO", "O3", "TEMP
 
 #Y1 = np.array(Y1)
 Y1 = Y1.to_numpy()
-#Y1 = pd.array(Y1)
+X1 = X1.to_numpy()
 
 fig, axs = plt.subplots(nrows=5,ncols=3)
 fig.suptitle('Content of ')
