@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-from feature_selection import features_selection
 from load_data import *
+from feature_selection import *
 #worktbl = pd.concat([X1.drop(['wd'], axis=1), pd.get_dummies(X1['wd'])], axis=1)
 # Handling ciclic variables
 # http://blog.davidkaleko.com/feature-engineering-cyclical-features.html
@@ -21,6 +21,10 @@ def handlecyclic(data_frame):
     return df
 
 worktbl = handlecyclic(X1)
-
 worktbl = pd.concat([worktbl.drop(['station'], axis=1), pd.get_dummies(X1['station']).add_prefix('station_')], axis=1)
 tbl = features_selection(worktbl, Y1, 7)
+
+print(tbl)
+
+#print_correlation(worktbl, Y1)
+print_mutual_information(worktbl, Y1)
