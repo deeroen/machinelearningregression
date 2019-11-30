@@ -2,6 +2,15 @@ import pandas as pd
 import numpy as np
 from load_data import *
 from feature_selection import *
+from sklearn.metrics import mean_squared_error, make_scorer
+from math import sqrt
+
+def custom_metric(y_test, y_pred):
+    return sqrt(mean_squared_error(y_test, y_pred))
+'''def rmse(predictions, targets):
+    return np.sqrt(((predictions - targets) ** 2).mean())'''
+M_squared_error = make_scorer(custom_metric, greater_is_better=False)
+
 #worktbl = pd.concat([X1.drop(['wd'], axis=1), pd.get_dummies(X1['wd'])], axis=1)
 # Handling ciclic variables
 # http://blog.davidkaleko.com/feature-engineering-cyclical-features.html
@@ -28,3 +37,7 @@ print(tbl)
 
 #print_correlation(worktbl, Y1)
 print_mutual_information(worktbl, Y1)
+
+
+
+
