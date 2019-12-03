@@ -31,13 +31,17 @@ def handlecyclic(data_frame):
 
 worktbl = handlecyclic(X1)
 worktbl = pd.concat([worktbl.drop(['station'], axis=1), pd.get_dummies(X1['station']).add_prefix('station_')], axis=1)
-tbl = features_selection(worktbl, Y1, 2)
+tbl = features_selection(worktbl, Y1, 7)
 
 print(tbl)
 
 #print_correlation(worktbl, Y1)
 print_mutual_information(worktbl, Y1)
 
+#Removing outliers
+
+'''tbl = tbl[Y1['Label']<400]
+Y1 = Y1[Y1['Label']<400]'''
 
 
 

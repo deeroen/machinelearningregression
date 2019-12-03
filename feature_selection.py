@@ -1,11 +1,12 @@
 from sklearn.feature_selection import SelectKBest
 import sklearn.feature_selection as fs
 from sklearn.feature_selection import chi2
-from sklearn import feature_selection, tree
+from sklearn import feature_selection
 import pandas as pd
 from sklearn import preprocessing
 import numpy as np
-
+from sklearn.tree import DecisionTreeRegressor
+from sklearn import preprocessing
 def print_correlation(X, Y):
     print("Correlation : ")
     corrcoef = np.corrcoef(X, Y, rowvar=False)[-1, :33]
@@ -28,8 +29,8 @@ def print_mutual_information(X,Y):
 
 def features_selection(features_df, target, nb_of_features):
     # normalize the table
-    min_max_scaler = preprocessing.MinMaxScaler()
-    scaled_df = pd.DataFrame(min_max_scaler.fit_transform(features_df))
+
+    scaled_df = pd.DataFrame(preprocessing.scale(features_df))
     scaled_df.columns = features_df.columns
 
     # Select with mutual information
@@ -44,8 +45,16 @@ def features_selection(features_df, target, nb_of_features):
     # Get columns to keep
     cols2 = scaled_df.columns[selector.get_support(indices=True)]
 
+    # Select variables with tree
+    clf = DecisionTreeRegressor(max_depth=5)
+    clf = clf.fit(scaled_df, target)
+    # Get the most important feature
+    importances = clf.feature_importances_
 
-    features = list(set(list(cols1)) | set(list(cols2)))
+    cols3 = list(scaled_df.columns[np.flip(np.argsort(importances)[-nb_of_features:])])
+
+
+    features = list(set(list(cols1)) | set(list(cols2)) | set(list(cols3)))
     # Create new dataframe with only desired columns, or overwrite existing
     a_scaled = scaled_df[features]
 

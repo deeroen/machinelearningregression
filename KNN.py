@@ -8,14 +8,14 @@ from data_treatment import *
 
 
 
-k_range = list(range(1,31))
+k_range = list(range(1,31)) + [50,100]
 weight_options = ["uniform", "distance"]
 
 param_grid = dict(n_neighbors = k_range, weights = weight_options)
 #print (param_grid)
 knn = KNeighborsRegressor()
 
-grid = GridSearchCV(knn, param_grid, cv = 3, scoring = M_squared_error)
+grid = GridSearchCV(knn, param_grid, cv = 5, scoring = M_squared_error)
 grid.fit(tbl,Y1)
 
 
