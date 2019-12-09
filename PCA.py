@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 pca = PCA(n_components=5)
-pca.fit(tbl)
+pca.fit(worktbl)
 
 
 print(pca.explained_variance_ratio_)

@@ -8,14 +8,8 @@ param_grid = p_grid = {"max_depth": [2,3,5,10,15],"min_samples_split" : [5,10,20
 #print (param_grid)
 Tree = DecisionTreeRegressor()
 
-grid = GridSearchCV(Tree, param_grid, cv = 3, scoring = M_squared_error)
-grid.fit(tbl,Y1)
-
-
-
-
-
-
+grid = GridSearchCV(Tree, param_grid, cv = 5, scoring = M_squared_error)
+grid.fit(tbl,y_train_valid)
 
 
 print (grid.best_score_)
@@ -23,13 +17,12 @@ print (grid.best_params_)
 print (grid.best_estimator_)
 
 
-'''def rmse(predictions, targets):
+print('Results on the test set')
+
+def rmse(predictions, targets):
     return np.sqrt(((predictions - targets) ** 2).mean())
-clf = DecisionTreeRegressor(criterion='mae', max_depth=6, max_features=None,
-                      max_leaf_nodes=None, min_impurity_decrease=0.01,
-                      min_impurity_split=None, min_samples_leaf=1,
-                      min_samples_split=20, min_weight_fraction_leaf=0.0,
-                      presort=False, random_state=None, splitter='best')
-clf.fit(tbl, Y1)
-pred = clf.predict(tbl)
-rmse(pred,Y1.values)'''
+clf = grid.best_estimator_
+clf.fit(tbl,y_train_valid)
+
+pred = clf.predict(X_test[tbl.columns])
+print(rmse(pred,y_test.values))

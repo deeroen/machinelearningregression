@@ -7,6 +7,7 @@ from sklearn import preprocessing
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from sklearn import preprocessing
+
 def print_correlation(X, Y):
     print("Correlation : ")
     corrcoef = np.corrcoef(X, Y, rowvar=False)[-1, :33]
@@ -27,11 +28,9 @@ def print_mutual_information(X,Y):
         print(ind, feature_names[ind], "mutual_information = ", mi[ind])
 
 
-def features_selection(features_df, target, nb_of_features):
-    # normalize the table
+def features_selection(scaled_df, target, nb_of_features):
 
-    scaled_df = pd.DataFrame(preprocessing.scale(features_df))
-    scaled_df.columns = features_df.columns
+
 
     # Select with mutual information
     selector = SelectKBest(feature_selection.mutual_info_regression, k=nb_of_features)

@@ -16,21 +16,20 @@ param_grid = dict(n_neighbors = k_range, weights = weight_options)
 knn = KNeighborsRegressor()
 
 grid = GridSearchCV(knn, param_grid, cv = 5, scoring = M_squared_error)
-grid.fit(tbl,Y1)
-
+grid.fit(tbl,y_train_valid)
 
 
 print (grid.best_score_)
 print (grid.best_params_)
 print (grid.best_estimator_)
 
-'''
+
+print('Results on the test set')
+
 def rmse(predictions, targets):
     return np.sqrt(((predictions - targets) ** 2).mean())
-clf = KNeighborsRegressor(algorithm='auto', leaf_size=30, metric='minkowski',
-                    metric_params=None, n_jobs=None, n_neighbors=12, p=2,
-                    weights='distance')
-clf.fit(tbl, np.array(Y1.astype(int).values))
-pred = clf.predict(tbl)
-rmse(pred,Y1.values.transpose())'''
+clf = grid.best_estimator_
+clf.fit(tbl,y_train_valid)
 
+pred = clf.predict(X_test[tbl.columns])
+print(rmse(pred,y_test.values))
