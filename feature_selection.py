@@ -38,7 +38,7 @@ def features_selection(scaled_df, target, nb_of_features):
     # Get columns to keep
     cols1 = scaled_df.columns[selector.get_support(indices=True)]
 
-    # Select with F-value between label/feature for regression tasks
+    # Select with corrcoef between label/feature for regression tasks
     corrcoef = pd.DataFrame(abs(np.corrcoef(scaled_df, target, rowvar=False)[-1, :scaled_df.shape[1]]))
     # Get the most important feature
     corrcoef.columns = np.array(['Corrcoef'])
