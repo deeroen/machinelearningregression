@@ -39,23 +39,53 @@ worktbl = handlecyclic(X1)
 # Create a new column for each station with binary variable
 worktbl = pd.concat([worktbl, pd.get_dummies(X1['station']).add_prefix('station_')], axis=1)
 
-#Scale the data
-scaled_data = pd.DataFrame(preprocessing.scale(worktbl))
-scaled_data.columns = worktbl.columns
+
 
 '''Train-test split'''
-X_train_valid, X_test, y_train_valid, y_test = train_test_split(scaled_data, Y1, test_size=0.2, random_state=42)
+X_train_valid, X_test, y_train_valid, y_test = train_test_split(worktbl, Y1, test_size=0.2, random_state=42)
+
+#Scale the data
+scaled_data = pd.DataFrame(preprocessing.scale(X_train_valid))
+scaled_data.columns = worktbl.columns
+scaled_data_test = pd.DataFrame(preprocessing.scale(X_test))
+scaled_data_test.columns = worktbl.columns
 
 
+mi = pd.DataFrame(fs.mutual_info_regression(scaled_data, y_train_valid))
+mi.columns = np.array(['MI'])
+mi['variable_name'] = scaled_data.columns
+mi.sort_values(by=['MI'],inplace=True,ascending=False)
+import numpy as np
+import sklearn.feature_selection as fs
+from sklearn.feature_selection import SelectKBest
+from sklearn.tree import DecisionTreeRegressor
+from sklearn import feature_selection
 
-tbl = features_selection(X_train_valid, y_train_valid, 7)
+# Select variables with tree
+clf = DecisionTreeRegressor(max_depth=10)
+clf = clf.fit(scaled_data, y_train_valid)
+# Get the most important feature
+importances = pd.DataFrame(clf.feature_importances_)
+importances.columns = np.array(['Tree'])
+importances['variable_name'] = scaled_data.columns
+importances.sort_values(by=['Tree'],inplace=True,ascending=False)
+
+
+corrcoef = pd.DataFrame(abs(np.corrcoef(scaled_data, y_train_valid, rowvar=False)[-1, :34]))
+# Get the most important feature
+
+corrcoef.columns = np.array(['Corrcoef'])
+corrcoef['variable_name'] = scaled_data.columns
+corrcoef.sort_values(by=['Corrcoef'],inplace=True,ascending=False)
+
+'''tbl = features_selection(X_train_valid, y_train_valid, 7)
 
 print(tbl)
 
 #print_correlation(worktbl, Y1)
 print_mutual_information(X_train_valid, y_train_valid)
 
-#Removing outliers
+#Removing outliers'''
 
 
 
