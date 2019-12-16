@@ -34,7 +34,7 @@ def print_mutual_information(X1_handled, X,Y, n):
     return most_mi
 
 def features_selection(scaled_df, target, nb_of_features):
-    # Select with mutual information
+    # Select with mutual informations
     selector = SelectKBest(feature_selection.mutual_info_regression, k=nb_of_features)
     selector.fit_transform(scaled_df, target)
     # Get columns to keep

@@ -66,9 +66,9 @@ clf = DecisionTreeRegressor(max_depth=10)
 clf = clf.fit(scaled_data, y_train_valid)
 # Get the most important feature
 importances = pd.DataFrame(clf.feature_importances_)
-importances.columns = np.array(['Tree'])
+importances.columns = np.array(['Tree_feature_importance'])
 importances['variable_name'] = scaled_data.columns
-importances.sort_values(by=['Tree'],inplace=True,ascending=False)
+importances.sort_values(by=['Tree_feature_importance'],inplace=True,ascending=False)
 
 corrcoef = pd.DataFrame(abs(np.corrcoef(scaled_data, y_train_valid, rowvar=False)[-1, :34]))
 # Get the most important feature
@@ -83,11 +83,22 @@ t1 = pd.merge(t0,mi.head(n), on=['variable_name'],how='outer')
 
 t3 = pd.DataFrame(t1['variable_name'])
 t3['Mutual Information'] = pd.Series(t1['MI']).notna()
-t3['Tree'] = pd.Series(t1['Tree']).notna()
+t3['Tree_feature_importance'] = pd.Series(t1['Tree_feature_importance']).notna()
 t3['Corrcoef'] = pd.Series(t1['Corrcoef']).notna()
 '''tbl = features_selection(X_train_valid, y_train_valid, 7)'''
 
+print(t3.to_latex(index=False))
 
 
 
-
+from sklearn import tree
+import pydotplus
+# Create DOT data
+dot_data = tree.export_graphviz(clf,impurity=False, out_file=None,
+                                feature_names=list(worktbl.columns),
+                                class_names=matching[1],filled=True,
+                                rounded=True,
+                                special_characters=True)
+# Draw graph
+graph = pydotplus.graph_from_dot_data(dot_data)
+graph.write_png('C:\\Users\cocol\Desktop\memoire\Jéjé_work\\tree_per_exo_dislay\\tree_for'+str(exo)+'.png')
