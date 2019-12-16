@@ -39,11 +39,12 @@ def features_selection(scaled_df, target, nb_of_features):
     cols1 = scaled_df.columns[selector.get_support(indices=True)]
 
     # Select with F-value between label/feature for regression tasks
-    selector = SelectKBest(feature_selection.f_regression, k=nb_of_features)
-    selector.fit_transform(scaled_df, target)
-    # Get columns to keep
-    cols2 = scaled_df.columns[selector.get_support(indices=True)]
-
+    corrcoef = pd.DataFrame(abs(np.corrcoef(scaled_df, target, rowvar=False)[-1, :scaled_df.shape[1]]))
+    # Get the most important feature
+    corrcoef.columns = np.array(['Corrcoef'])
+    corrcoef['variable_name'] = scaled_df.columns
+    corrcoef.sort_values(by=['Corrcoef'], inplace=True, ascending=False)
+    cols2 = corrcoef['variable_name'].head(nb_of_features)
     # Select variables with tree
     clf = DecisionTreeRegressor(max_depth=5)
     clf = clf.fit(scaled_df, target)
