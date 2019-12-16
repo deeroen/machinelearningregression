@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler 
-
+from scipy.stats import shapiro
 def handlecyclic(data_frame):
     df = data_frame.copy()
     # handle hour values
@@ -57,6 +57,20 @@ def stand(X):
     X_stand = std_scaler.transform(X)
     return X_stand
 
+'''This funciton takes as imput a dataframe and return a list of all the features that are not distributed normally'''
+def isnormal(data):
+    # Shapiro-Wilk Test
+    for i in range(0,data.shape[1]):
+        # normality test
+        _, p = shapiro(data.iloc[:,i])
+        # interpret
+        alpha = 0.05
+        list = []
+        if p <= alpha:
+            print(p)
+            list.append(data.columns[i])
+            print('Sample does not look Gaussian (reject H0) at least for feature: '+str(data.columns[i]))
+    return list
 
 
 
