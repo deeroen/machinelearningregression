@@ -1,4 +1,4 @@
-from data_treatment import *
+from data_treatments import *
 
 import numpy as np
 from sklearn.decomposition import PCA

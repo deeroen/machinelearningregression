@@ -1,4 +1,4 @@
-from data_treatment import *
+from data_treatments import *
 import matplotlib.pyplot as plt
 
 def visualize(X, Y, feature_names, indexs):

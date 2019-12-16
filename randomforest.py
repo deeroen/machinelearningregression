@@ -1,6 +1,6 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
-from data_treatment import *
+from data_treatments import *
 # Build a classification task using 3 informative features
 
 

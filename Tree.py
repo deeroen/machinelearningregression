@@ -1,6 +1,6 @@
 from sklearn.model_selection import GridSearchCV
 
-from data_treatment import *
+from data_treatments import *
 from sklearn.tree import DecisionTreeRegressor
 #Parameters
 

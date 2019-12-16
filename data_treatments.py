@@ -70,22 +70,22 @@ importances.columns = np.array(['Tree'])
 importances['variable_name'] = scaled_data.columns
 importances.sort_values(by=['Tree'],inplace=True,ascending=False)
 
-
 corrcoef = pd.DataFrame(abs(np.corrcoef(scaled_data, y_train_valid, rowvar=False)[-1, :34]))
 # Get the most important feature
-
 corrcoef.columns = np.array(['Corrcoef'])
 corrcoef['variable_name'] = scaled_data.columns
 corrcoef.sort_values(by=['Corrcoef'],inplace=True,ascending=False)
 
-'''tbl = features_selection(X_train_valid, y_train_valid, 7)
 
-print(tbl)
+n= 10
+t0 = pd.merge(corrcoef.head(n),importances.head(n), on=['variable_name'],how='outer')
+t1 = pd.merge(t0,mi.head(n), on=['variable_name'],how='outer')
 
-#print_correlation(worktbl, Y1)
-print_mutual_information(X_train_valid, y_train_valid)
-
-#Removing outliers'''
+t3 = pd.DataFrame(t1['variable_name'])
+t3['Mutual Information'] = pd.Series(t1['MI']).notna()
+t3['Tree'] = pd.Series(t1['Tree']).notna()
+t3['Corrcoef'] = pd.Series(t1['Corrcoef']).notna()
+'''tbl = features_selection(X_train_valid, y_train_valid, 7)'''
 
 
 

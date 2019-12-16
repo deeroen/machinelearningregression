@@ -1,7 +1,7 @@
 from sklearn.model_selection import GridSearchCV
 
 from sklearn.neural_network import MLPRegressor
-from data_treatment import *
+from data_treatments import *
 
 #Parameters
 
