@@ -8,7 +8,7 @@ import sklearn.feature_selection as fs
 from sklearn.feature_selection import SelectKBest
 from sklearn.tree import DecisionTreeRegressor
 from sklearn import feature_selection
-
+import pandas as pd
 
 # print des n features avec les plus grandes correlations
 def print_correlation(X, Y, n):
@@ -40,11 +40,15 @@ def features_selection(scaled_df, target, nb_of_features):
     # Get columns to keep
     cols1 = scaled_df.columns[selector.get_support(indices=True)]
 
-    # Select with F-value between label/feature for regression tasks
-    selector = SelectKBest(feature_selection.f_regression, k=nb_of_features)
-    selector.fit_transform(scaled_df, target)
+    # Select with coeficient of correlation between label/feature for regression tasks
+    corrcoef = pd.DataFrame(abs(np.corrcoef(scaled_df, target, rowvar=False)[-1, :scaled_df.shape[1]]))
+    # Get the most important feature
+
+    corrcoef.columns = np.array(['Corrcoef'])
+    corrcoef['variable_name'] = scaled_df.columns
+    corrcoef.sort_values(by=['Corrcoef'], inplace=True, ascending=False)
     # Get columns to keep
-    cols2 = scaled_df.columns[selector.get_support(indices=True)]
+    cols2 = corrcoef['variable_name'][0:nb_of_features]
 
     # Select variables with tree
     clf = DecisionTreeRegressor(max_depth=5)
