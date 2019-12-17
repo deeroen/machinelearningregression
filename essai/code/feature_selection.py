@@ -58,8 +58,9 @@ def features_selection(scaled_df, target, nb_of_features):
 
     features = list(set(list(cols1)) | set(list(cols2)) | set(list(cols3)))
     # Create new dataframe with only desired columns, or overwrite existing
-    a_scaled = scaled_df[features]
-
-    return a_scaled
+    #a_scaled = scaled_df[features]
+    #return a_scaled
+    
+    return features
 
 
