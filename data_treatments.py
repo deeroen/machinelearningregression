@@ -5,7 +5,7 @@ from feature_selection import *
 from sklearn.metrics import mean_squared_error, make_scorer
 from math import sqrt
 from sklearn.model_selection import train_test_split
-
+from scipy.stats import shapiro
 
 def custom_metric(y_test, y_pred):
     return sqrt(mean_squared_error(y_test, y_pred))
@@ -62,7 +62,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn import feature_selection
 
 # Select variables with tree
-clf = DecisionTreeRegressor(max_depth=10)
+clf = DecisionTreeRegressor(max_depth=3)
 clf = clf.fit(scaled_data, y_train_valid)
 # Get the most important feature
 importances = pd.DataFrame(clf.feature_importances_)
@@ -95,10 +95,29 @@ from sklearn import tree
 import pydotplus
 # Create DOT data
 dot_data = tree.export_graphviz(clf,impurity=False, out_file=None,
-                                feature_names=list(worktbl.columns),
-                                class_names=matching[1],filled=True,
+                                feature_names=list(scaled_data.columns),filled=True,
                                 rounded=True,
                                 special_characters=True)
 # Draw graph
 graph = pydotplus.graph_from_dot_data(dot_data)
-graph.write_png('C:\\Users\cocol\Desktop\memoire\Jéjé_work\\tree_per_exo_dislay\\tree_for'+str(exo)+'.png')
+graph.write_png('C:\\Users\cocol\PycharmProjects\machinelearningregression\\tree.png')
+
+'''This funciton takes a imput a dataframe and return yes if all the features are distributed normally and false otherwise'''
+
+
+def isnormal(data):
+    # Shapiro-Wilk Test
+    for i in range(0,data.shape[1]):
+        # normality test
+        _, p = shapiro(data.iloc[:,i])
+        # interpret
+        alpha = 0.05
+        list = []
+        if p <= alpha:
+            print(p)
+            list.append(data.columns[i])
+            print('Sample does not look Gaussian (reject H0) at least for feature: '+str(data.columns[i]))
+
+    return list
+isnormal(worktbl)
+import matplotlib.pyplot as plt
