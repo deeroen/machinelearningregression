@@ -105,6 +105,7 @@ graph.write_png('C:\\Users\cocol\PycharmProjects\machinelearningregression\\tree
 '''This funciton takes a imput a dataframe and return yes if all the features are distributed normally and false otherwise'''
 
 
+
 def isnormal(data):
     # Shapiro-Wilk Test
     for i in range(0,data.shape[1]):
