@@ -34,24 +34,30 @@ def rbfn_tp(X_train, Y_train, X_test, Y_test, n_center, smooth_f):
     
     # split train-validation set
     X_train, X_valid, Y_train, Y_valid = train_test_split(X_train, Y_train, test_size=0.1, random_state=42)
-    rmses = {}
+    rmses_train = {}
+    rmses_test = {}
+    
     best = {'rmse':1000}
 
     for nc in n_center:
         print('n_center = ', nc)
-        rmses[nc] = list()
+        rmses_train[nc] = list()
+        rmses_test[nc] = list()
 
         for sf in smooth_f:
             print('smooth_f = ', sf)
-            rmse = score_rbfn(nc, sf, X_train.values, Y_train.values, X_valid.values, Y_valid.values)
-            rmses[nc].append(rmse)
-            if rmse < best['rmse']:
-                best['rmse'] = rmse
+            rmse_train = score_rbfn(nc, sf, X_train.values, Y_train.values, X_train.values, Y_train.values)
+            rmse_test = score_rbfn(nc, sf, X_train.values, Y_train.values, X_valid.values, Y_valid.values)
+            rmses_train[nc].append(rmse_train)
+            rmses_test[nc].append(rmse_test)
+            
+            if rmse_test < best['rmse']:
+                best['rmse'] = rmse_test
                 best['n_center'] = nc
                 best['smooth_f']= sf
     
     rmse = score_rbfn(best['n_center'], best['smooth_f'], X_train.values, Y_train.values, X_test.values, Y_test.values)
-    return rmse
+    return [rmse, rmses_train, rmses_test]
  
 # linear regression vue en tp
 def linear_regression_tp(X, Y, X_test, Y_test):
@@ -123,7 +129,7 @@ def linear_regression(X_train, Y_train, X_test, Y_test):
     
 def tree(X_train, Y_train, X_test, Y_test ):
     
-    param_grid = {"max_depth": [2,3,5,10,15],"min_samples_split" : [5,10,20],"min_impurity_decrease" : [0,0.01,0.02,0.1],'criterion':['mse','friedman_mse','mae']}
+    param_grid = {"max_depth": [2,10,20],"min_samples_split" : [5,10,20],"min_impurity_decrease" : [0,0.01,0.1],'criterion':['mse']}
     Tree = DecisionTreeRegressor()
 
     grid = GridSearchCV(Tree, param_grid, cv = 5, scoring = M_squared_error)
