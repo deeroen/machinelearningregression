@@ -11,7 +11,7 @@ from sklearn import feature_selection
 import pandas as pd
 
 # print des n features avec les plus grandes correlations
-def print_correlation(X, Y, n):
+def print_correlation(X1_handled, X, Y, n):
     print("Correlation : ")
     corrcoef = np.corrcoef(X1_handled, X, Y, rowvar=False)[-1, :33]
     #print(np.around(corrcoef, decimals=3))

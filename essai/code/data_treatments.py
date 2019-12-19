@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler 
+from sklearn.preprocessing import RobustScaler
+
 from scipy.stats import shapiro
 def handlecyclic(data_frame):
     df = data_frame.copy()
@@ -40,10 +42,12 @@ def add_linear_time(data_frame):
 # use of https://mrmint.fr/data-preprocessing-feature-scaling-python
 '''Min-Max Scaling peut- être appliqué quand les données varient dans des échelles différentes. 
 A l’issue de cette transformation, les features seront comprises dans un intervalle fixe [0,1]'''
-def norm(X):
+def norm(X, X_test):
     minmax_scale = MinMaxScaler().fit(X)
+        
     X_norm = minmax_scale.transform(X) 
-    return X_norm
+    X_test_norm = minmax_scale.transform(X_test) 
+    return [X_norm, X_test_norm]
 
 
 '''La standardisation (aussi appelée Z-Score normalisation peut- être appliquée quand les input features répondent
@@ -51,11 +55,25 @@ def norm(X):
 Par conséquent, cette transformation aura pour impact d’avoir toutes nos features répondant à la même 
 loi normale X \sim \mathcal{N} (0, \, 1).
 La standardisation peut également être appliquée quand les features ont des unités différentes.'''
-def stand(X):
+def stand(X, X_test, p):
     # Z-score standardisation
     std_scaler = StandardScaler().fit(X)
+    
+    if p:
+        print(std_scaler.mean_)
+        print(std_scaler.scale_)
+    
     X_stand = std_scaler.transform(X)
-    return X_stand
+    X_test_stand = std_scaler.transform(X_test)
+    return [X_stand, X_test_stand]
+
+
+def robust_scaler(X, X_test):
+    transformer = RobustScaler().fit(X)
+    X_trans = transformer.transform(X)
+    X_test_trans = transformer.transform(X_test)
+    return [X_trans, X_test_trans]
+    
 
 '''This funciton takes as imput a dataframe and return a list of all the features that are not distributed normally'''
 def isnormal(data):

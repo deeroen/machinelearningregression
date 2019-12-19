@@ -84,14 +84,42 @@ def KNN(X_train, Y_train, X_test, Y_test, k_range=list(range(1,31)) + [50,100], 
     clf.fit(X_train,Y_train)
 
     pred = clf.predict(X_test[X_train.columns])
-    return rmse(pred,Y_test.values)
+    return custom_metric(pred,Y_test.values)
+
+
+
+def print_KNN(X_train, Y_train, X_test, Y_test):
+    
+    k_range=list(range(1,31)) + [50,100]
+    #k_range= [50,100]
+    k_range=[500,1000]
+    
+    weight_options = ["uniform"]
+    param_grid = dict(n_neighbors = k_range, weights = weight_options)
+    
+    knn = KNeighborsRegressor()
+    
+    grid = GridSearchCV(knn, param_grid, cv = 5, scoring = M_squared_error)
+    grid.fit(X_train,Y_train)
+
+    print (grid.best_score_)
+    print (grid.best_params_)
+    print (grid.best_estimator_)
+
+    clf = grid.best_estimator_
+    clf.fit(X_train,Y_train)
+
+    pred_train = clf.predict(X_train[X_train.columns])
+    pred_test = clf.predict(X_test[X_train.columns])
+    return [rmse(pred_train,Y_train.values),rmse(pred_test,Y_test.values)]
+
     
 def linear_regression(X_train, Y_train, X_test, Y_test):
   
     param_grid = dict(fit_intercept = [True]) 
     lr = LinearRegression().fit(X_train,Y_train)
     pred = lr.predict(X_test[X_train.columns])
-    return rmse(pred,Y_test.values)
+    return custom_metric(pred,Y_test.values)
     
 def tree(X_train, Y_train, X_test, Y_test ):
     
@@ -109,7 +137,31 @@ def tree(X_train, Y_train, X_test, Y_test ):
     clf.fit(X_train,Y_train)
 
     pred = clf.predict(X_test[X_train.columns])
-    return rmse(pred,Y_test.values)
+    return custom_metric(pred,Y_test.values)
+
+def tree_print(X_train, Y_train, X_test, Y_test ):
+    param_grid = {
+                  "min_samples_leaf" : [10,20,50,100],
+                  'criterion':['mse']}
+    Tree = DecisionTreeRegressor()
+
+    grid = GridSearchCV(Tree, param_grid, cv = 5, scoring = M_squared_error)
+    grid.fit(X_train,Y_train)
+
+    print (grid.best_score_)
+    print (grid.best_params_)
+    print (grid.best_estimator_)
+
+    clf = grid.best_estimator_
+    clf.fit(X_train,Y_train)
+    
+    pred_train = clf.predict(X_train[X_train.columns])
+    pred_test = clf.predict(X_test[X_train.columns])
+    
+    return [custom_metric(pred_train, Y_train.values), custom_metric(pred_test,Y_test.values)]
+
+    
+
     
 def random_forest(X_train, Y_train, X_test, Y_test):
     param_grid = {'n_estimators': [500, 700, 1000], 'max_depth': [1, 2, 3], 'min_samples_split': [2, 3]}
@@ -126,7 +178,7 @@ def random_forest(X_train, Y_train, X_test, Y_test):
     clf.fit(X_train,Y_train.values.ravel())
 
     pred = clf.predict(X_test[X_train.columns])
-    return rmse(pred,Y_test.values)
+    return custom_metric(pred,Y_test.values)
 
 def MLperceptron(X_train, Y_train, X_test, Y_test):
     
@@ -143,7 +195,7 @@ def MLperceptron(X_train, Y_train, X_test, Y_test):
     clf = grid.best_estimator_
     clf.fit(X_train,Y_train.values.ravel())
     pred = clf.predict(X_test[X_train.columns])
-    return rmse(pred,Y_test.values)
+    return custom_metric(pred,Y_test.values)
     
 def SVM(X_train, Y_train, X_test, Y_test):
     parameters = {'kernel': ('linear', 'rbf', 'poly', 'sigmoid'), 'C': [0.1,1,10], 'degree':[3], 'gamma':['auto']}
@@ -160,5 +212,5 @@ def SVM(X_train, Y_train, X_test, Y_test):
     clf.fit(X_train,Y_train)
 
     pred = clf.predict(X_test[X_train.columns])
-    return [rmse(pred,Y_test.values), [grid.best_score_,grid.best_params_,grid.best_estimator_]]
+    return [custom_metric(pred,Y_test.values), [grid.best_score_,grid.best_params_,grid.best_estimator_]]
 
