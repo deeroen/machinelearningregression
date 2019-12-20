@@ -20,8 +20,8 @@ def handlecyclic(data_frame):
     df['mnth_sin'] = np.sin((df['month']-1)*(2.*np.pi/12))
     df['mnth_cos'] = np.cos((df['month']-1)*(2.*np.pi/12))
     # handle day values
-    df['day_sin'] = np.sin((df['day'] - 1) * (2. * np.pi / 12))
-    df['day_cos'] = np.cos((df['day'] - 1) * (2. * np.pi / 12))
+    df['day_sin'] = np.sin((df['day'] - 1) * (2. * np.pi / 31))
+    df['day_cos'] = np.cos((df['day'] - 1) * (2. * np.pi / 31))
     # handle wind direction
     df = df.replace({'N': 0,'NNE':1,'NE':2,'ENE':3,'E':4,'ESE':5,'SE':6,'SSE':7,'S':8,'SSW':9,'SW':10,'WSW':11,'W':12,'WNW':13,'NW':14,'NNW':15})
     df['wd_sin'] = np.sin((df['wd']) * (2. * np.pi / 16))
@@ -38,23 +38,6 @@ def add_linear_time(data_frame):
     #df2['time'] = data_frame['year']*1000000+(data_frame['month']/12)*1000+(data_frame['day']/31)*10+(data_frame['hour']/24)
     return pd.concat([data_frame, df2], axis=1)
 
-
-# use of https://mrmint.fr/data-preprocessing-feature-scaling-python
-'''Min-Max Scaling peut- être appliqué quand les données varient dans des échelles différentes. 
-A l’issue de cette transformation, les features seront comprises dans un intervalle fixe [0,1]'''
-def norm(X, X_test):
-    minmax_scale = MinMaxScaler().fit(X)
-        
-    X_norm = minmax_scale.transform(X) 
-    X_test_norm = minmax_scale.transform(X_test) 
-    return [X_norm, X_test_norm]
-
-
-'''La standardisation (aussi appelée Z-Score normalisation peut- être appliquée quand les input features répondent
-à des distributions normales (Distributions Gaussiennes) avec des moyennes et des écart-types différents. 
-Par conséquent, cette transformation aura pour impact d’avoir toutes nos features répondant à la même 
-loi normale X \sim \mathcal{N} (0, \, 1).
-La standardisation peut également être appliquée quand les features ont des unités différentes.'''
 def stand(X, X_test, p):
     # Z-score standardisation
     std_scaler = StandardScaler().fit(X)
