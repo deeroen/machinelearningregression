@@ -57,18 +57,13 @@ def rbfn_tp(X_train, Y_train, X_test, Y_test, n_center, smooth_f):
                 best['smooth_f']= sf
     
     rmse = score_rbfn(best['n_center'], best['smooth_f'], X_train.values, Y_train.values, X_test.values, Y_test.values)
-    return [rmse, rmses_train, rmses_test]
+    return [rmse, rmses_train, rmses_test, best]
  
 # linear regression vue en tp
 def linear_regression_tp(X, Y, X_test, Y_test):
     linear_model = MyLinearRegressor(add_bias = True)
     linear_model.fit(X.values, Y.values)
     return linear_model.score(X_test.values, Y_test.values)
-
-
-
-def rmse(predictions, targets):
-    return np.sqrt(((predictions - targets) ** 2).mean())
 def custom_metric(y_test, y_pred):
     return np.sqrt(mean_squared_error(y_test, y_pred))
 M_squared_error = make_scorer(custom_metric, greater_is_better=False)
@@ -117,7 +112,7 @@ def print_KNN(X_train, Y_train, X_test, Y_test):
 
     pred_train = clf.predict(X_train[X_train.columns])
     pred_test = clf.predict(X_test[X_train.columns])
-    return [rmse(pred_train,Y_train.values),rmse(pred_test,Y_test.values)]
+    return [custom_metric(pred_train,Y_train.values),custom_metric(pred_test,Y_test.values)]
 
     
 def linear_regression(X_train, Y_train, X_test, Y_test):
